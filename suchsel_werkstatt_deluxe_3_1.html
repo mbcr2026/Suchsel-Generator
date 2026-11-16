@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suchsel-Werkstatt Deluxe</title>
+<style>
+:root{--ink:#203044;--accent:#286a8a;--paper:#fff;--bg:#edf2f5;--line:#d7e0e7;--cell:#f8fbfd;--mark:#ffe08a;--anti-mark:#b9e4d0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(120deg,#183b56,#287b91);color:white;padding:24px clamp(16px,4vw,48px)}
+header h1{margin:0;font-size:clamp(24px,4vw,34px)}header p{margin:6px 0 0;color:#e0f1f5}
+main{max-width:1500px;margin:22px auto;padding:0 16px 36px;display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:18px;min-height:calc(100vh - 150px)}
+.panel,.preview{background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px #1c38500d}
+.panel{padding:18px;align-self:stretch;min-height:0;overflow-y:auto;overscroll-behavior:contain}.panel h2,.preview h2{font-size:18px;margin:0 0 13px}.section{padding-bottom:17px;margin-bottom:17px;border-bottom:1px solid #e8edf1}.section:last-child{border:0;margin:0;padding:0}
+label{display:block;font-weight:650;font-size:13px;margin:10px 0 5px}input,textarea,select{width:100%;border:1px solid #cbd6df;border-radius:8px;padding:9px 10px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:160px;resize:vertical}input[type=color]{height:40px;padding:3px}input[type=checkbox]{width:auto;accent-color:var(--accent)}.checks{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.checks label{font-weight:500;margin:0;display:flex;gap:7px;align-items:center}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:0;border-radius:9px;padding:10px 13px;font:650 14px system-ui;cursor:pointer;background:var(--accent);color:white}button:hover{filter:brightness(.94)}button.secondary{background:#e8f0f4;color:#21455a}button.ghost{background:#f1f4f6;color:#34495a}.actions{display:flex;flex-wrap:wrap;gap:8px}.actions button{flex:1}
+.hint{font-size:12px;color:#647789;margin:7px 0}.preview{padding:clamp(14px,2.5vw,28px);min-width:0;min-height:0;overflow-y:auto;overscroll-behavior:contain}.previewtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.sheet{max-width:920px;margin:0 auto;color:#172536}.sheet h2{text-align:center;font-size:27px;margin:6px 0}.subtitle{text-align:center;margin:0 0 5px;color:#526273}.author{text-align:center;font-size:12px;color:#647789;margin-bottom:18px}.gridwrap{overflow:auto;margin:12px auto 18px}.puzzle{border-collapse:collapse;margin:0 auto;table-layout:fixed}.puzzle td{border:1px solid #718291;width:34px;height:34px;text-align:center;font-weight:450;font-size:18px;padding:0;background:var(--cell);color:#142b3e}.puzzle td.found{background:var(--mark)!important;color:#15283a}.puzzle td.anti-found{background:var(--anti-mark)!important;color:#15283a}.puzzle td.both-found{background:linear-gradient(135deg,var(--mark) 0 50%,var(--anti-mark) 50% 100%)!important;color:#15283a}.wordlist{display:block;margin:14px auto;max-width:800px}.word-section{margin:14px auto 18px}.word-section h3{font-size:16px;text-align:center;margin:0 0 8px}.word-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 28px;max-width:620px;margin:0 auto}.word-columns span{font-size:14px;padding:2px 4px}.word-columns .foundword{text-decoration:line-through;color:#75818a}.anti-list{list-style:none;padding:0;margin:0 auto;max-width:620px}.anti-list li{padding:3px 6px;text-align:left;font-size:14px}.anti-list .anti-solution{color:#397b61;font-weight:700}.message{text-align:center;margin:10px auto;max-width:800px;white-space:pre-wrap}.solutionkey{font-size:12px;text-align:center;color:#667788;margin-top:12px}.status{font-size:12px;color:#526273;margin-top:8px}
+@media(max-width:900px){main{grid-template-columns:1fr;min-height:0}.panel{order:1;overflow:visible;max-height:none}.preview{order:2;overflow:visible;max-height:none}}@media(min-width:901px){body{overflow:hidden}main{height:calc(100vh - 150px);overflow:hidden}.panel,.preview{height:100%}}@page{margin:12mm}@media print{body{overflow:visible;background:white}header,.panel,.previewtop,.status,.no-print{display:none!important}main{display:block;height:auto;min-height:0;overflow:visible;margin:0;padding:0}.panel,.preview{height:auto;max-height:none;overflow:visible}.preview{border:0;box-shadow:none;padding:0}.sheet{max-width:none}.puzzle td{width:30px;height:30px;font-size:16px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.gridwrap{overflow:visible}.sheet h2{font-size:24px}}
+</style>
+</head>
+<body>
+<header><h1>🔎 Suchsel-Werkstatt Deluxe</h1><p>Dein persönlicher Wortsuchrätsel-Generator – komplett offline und kostenlos nutzbar.</p></header>
+<main>
+<aside class="panel">
+ <div class="section">
+  <h2>1. Wörter & Überschrift</h2>
+  <label for="title">Titel des Rätsels</label><input id="title" value="Mein Suchsel">
+  <label for="subtitle">Untertitel / Thema</label><input id="subtitle" placeholder="z. B. Tiere im Wald">
+  <label for="author">Name / Herausgeber (optional)</label><input id="author" placeholder="z. B. Frau Müller">
+  <label for="words">Suchbegriffe (ein Begriff pro Zeile oder durch Komma getrennt)</label>
+  <textarea id="words">EICHHÖRNCHEN
+WALD
+FUCHS
+REH
+BAUM
+BLÄTTER
+PILZ
+MOOS
+VOGEL
+IGEL</textarea>
+  <div class="actions"><button id="applyWords">Suchbegriffe übernehmen &amp; Gitter erstellen</button></div>
+  <div class="actions" style="margin-top:8px"><button class="secondary" id="saveList">Wortliste speichern (TXT)</button><button class="secondary" id="loadList">Wortliste laden (TXT)</button><input id="wordlistFileInput" type="file" accept=".txt,.csv,.json,text/plain" hidden></div>
+  <p class="hint">Mehrteilige Begriffe sind erlaubt: Schreibe z. B. „Clara Schumann“ in eine Zeile. Zwischen den Wortteilen erscheint im Gitter ein mittiger Punkt (·).</p>
+  <label for="antiWords">Anti-Begriffe (eine Zeile pro Begriff, Format: Begriff; Anzahl)</label>
+  <textarea id="antiWords" placeholder="Pups;10&#10;Käsefüße;5&#10;Müll;8" style="min-height:110px"></textarea>
+  <p class="hint">Jede Zeile wird so oft im Gitter versteckt, wie du angibst. Beispiel: <b>Pups;10</b> platziert „PUPS“ zehnmal. Die Anti-Begriffe erhalten in der Lösung eine eigene Farbe.</p>
+ </div>
+ <div class="section">
+  <h2>2. Rätsel-Einstellungen</h2>
+  <div class="two"><div><label for="rows">Zeilen</label><input id="rows" type="number" min="5" max="30" value="13"></div><div><label for="cols">Spalten</label><input id="cols" type="number" min="5" max="30" value="13"></div></div>
+  <label for="difficulty">Schwierigkeit</label><select id="difficulty"><option value="easy">Leicht – vorwärts, waagerecht/senkrecht</option><option value="medium" selected>Mittel – zusätzlich diagonal</option><option value="hard">Schwer – alle Richtungen, auch rückwärts</option><option value="custom">Eigene Richtungen auswählen</option></select>
+  <div class="checks" id="directions">
+   <label><input type="checkbox" value="0,1" checked> Waagerecht →</label><label><input type="checkbox" value="1,0" checked> Senkrecht ↓</label>
+   <label><input type="checkbox" value="1,1" checked> Diagonal ↘</label><label><input type="checkbox" value="1,-1" checked> Diagonal ↙</label>
+   <label><input type="checkbox" value="0,-1"> Rückwärts ←</label><label><input type="checkbox" value="-1,0"> Rückwärts ↑</label>
+   <label><input type="checkbox" value="-1,-1"> Diagonal ↖</label><label><input type="checkbox" value="-1,1"> Diagonal ↗</label>
+  </div>
+  <label>Suchrichtungen für Anti-Begriffe (unabhängig von den Suchwörtern)</label>
+  <div class="checks" id="antiDirections">
+   <label><input type="checkbox" value="0,1" checked> Waagerecht →</label><label><input type="checkbox" value="1,0" checked> Senkrecht ↓</label>
+   <label><input type="checkbox" value="1,1" checked> Diagonal ↘</label><label><input type="checkbox" value="1,-1" checked> Diagonal ↙</label>
+   <label><input type="checkbox" value="0,-1"> Rückwärts ←</label><label><input type="checkbox" value="-1,0"> Rückwärts ↑</label>
+   <label><input type="checkbox" value="-1,-1"> Diagonal ↖</label><label><input type="checkbox" value="-1,1"> Diagonal ↗</label>
+  </div>
+  <div class="two"><div><label for="fill">Füllbuchstaben</label><select id="fill"><option value="letters">Zufällige Buchstaben</option><option value="vowels">Nur Vokale</option><option value="alphabet">Ohne Umlaute</option></select></div><div><label for="fontSize">Buchstabengröße im Gitter</label><select id="fontSize"><option value="14">14 px</option><option value="16">16 px</option><option value="18" selected>18 px</option><option value="20">20 px</option><option value="22">22 px</option><option value="24">24 px</option><option value="26">26 px</option><option value="28">28 px</option></select></div></div>
+  <label for="gridFont">Schriftart im Buchstabengitter</label><select id="gridFont"><option value="Arial, Helvetica, sans-serif">Arial</option><option value="Verdana, Geneva, sans-serif" selected>Verdana</option><option value="Tahoma, Geneva, sans-serif">Tahoma</option><option value="Trebuchet MS, sans-serif">Trebuchet MS</option><option value="Calibri, Arial, sans-serif">Calibri</option><option value="Helvetica, Arial, sans-serif">Helvetica</option><option value="Georgia, serif">Georgia</option><option value="Times New Roman, serif">Times New Roman</option><option value="Cambria, Georgia, serif">Cambria</option><option value="Century Gothic, Arial, sans-serif">Century Gothic</option></select>
+  <label for="gridWeight">Schriftstärke im Buchstabengitter</label><select id="gridWeight"><option value="400">Nicht fett</option><option value="700">Fett</option><option value="900">Extra fett</option></select>
+ </div>
+ <div class="section">
+  <h2>3. Gestaltung</h2>
+  <div class="two"><div><label for="accent">Akzentfarbe</label><input id="accent" type="color" value="#286a8a"></div><div><label for="cellcolor">Feldfarbe</label><input id="cellcolor" type="color" value="#f8fbfd"></div></div>
+  <div class="two"><div><label for="markcolor">Lösungsfarbe Suchwörter</label><input id="markcolor" type="color" value="#ffe08a"></div><div><label for="antimarkcolor">Lösungsfarbe Anti-Begriffe</label><input id="antimarkcolor" type="color" value="#b9e4d0"></div></div><label for="bordercolor">Gitternetz</label><input id="bordercolor" type="color" value="#718291">
+  <label for="message">Anweisung für die Spieler</label><input id="message" value="Finde alle versteckten Wörter im Buchstabengitter!">
+ </div>
+ <div class="section">
+  <h2>4. Erstellen & Exportieren</h2>
+  <div class="actions"><button id="generate">✨ Rätsel neu erstellen</button><button class="secondary" id="reshuffle">Neu mischen</button></div>
+  <div class="actions" style="margin-top:8px"><button class="secondary" id="showSolution">Lösung anzeigen</button><button class="secondary" id="hideSolution">Lösung ausblenden</button></div>
+  <div class="actions" style="margin-top:8px"><button class="secondary" id="printPuzzle">Rätsel drucken / PDF</button><button class="secondary" id="printSolution">Lösung drucken / PDF</button></div>
+  <div class="actions" style="margin-top:8px"><button class="ghost" id="downloadWords">Wortliste als TXT</button><button class="ghost" id="exportData">Projekt speichern</button><button class="ghost" id="importData">Projekt laden</button><input id="fileInput" type="file" accept=".json" hidden></div>
+  <div class="status" id="status" aria-live="polite">Bereit. Passe deine Einstellungen an und erstelle ein Rätsel.</div>
+ </div>
+</aside>
+<section class="preview">
+ <div class="previewtop"><h2>Vorschau</h2><button id="generateTop">Suchsel jetzt erstellen</button></div>
+ <p class="hint no-print">Nach Änderungen an der Wortliste links auf „Suchbegriffe übernehmen &amp; Gitter erstellen“ oder hier auf „Suchsel jetzt erstellen“ klicken.</p>
+ <div class="sheet" id="sheet">
+  <h2 id="outTitle">Mein Suchsel</h2><p class="subtitle" id="outSubtitle"></p><div class="author" id="outAuthor"></div>
+  <div class="message" id="outMessage">Finde alle versteckten Wörter im Buchstabengitter!</div>
+  <div class="gridwrap"><table class="puzzle" id="puzzle"></table></div>
+  <div class="wordlist" id="wordlist"></div>
+  <div class="solutionkey" id="solutionkey"></div>
+ </div>
+</section>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let current=null, solutionVisible=false;
+const dirsAll=[[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0],[-1,-1],[-1,1]];
+function cleanParts(item){return item.toLocaleUpperCase('de-DE').split(/\s+/).map(s=>s.replace(/[^A-ZÄÖÜẞ]/g,'')).filter(Boolean)}
+function parseEntries(){
+ const raw=$('words').value.split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean);
+ const seen=new Set(), entries=[];
+ for(const item of raw){
+  const parts=cleanParts(item);if(!parts.length)continue;
+  const label=parts.join(' ');if(seen.has(label))continue;seen.add(label);
+  entries.push({label,pattern:parts.join('·'),kind:'main'});
+ }
+ return entries;
+}
+function parseAntiEntries(){
+ const raw=$('antiWords').value.split(/[\n]+/).map(s=>s.trim()).filter(Boolean), entries=[];
+ for(const line of raw){
+  const m=line.match(/^(.*?)(?:\s*[;=|,]\s*|\s+-\s+)(\d+)\s*$/);
+  if(!m)throw Error('Bitte Anti-Begriffe im Format „Pups;10“ eingeben (ein Begriff pro Zeile). Fehlerhafte Zeile: '+line);
+  const label=m[1].trim(), count=Math.max(1,Math.min(100,Number(m[2]))), parts=cleanParts(label);
+  if(!parts.length)continue;
+  for(let i=0;i<count;i++)entries.push({label:parts.join(' '),pattern:parts.join('·'),kind:'anti',instance:i+1});
+ }
+ return entries;
+}
+function activeDirs(){
+ const mode=$('difficulty').value;
+ if(mode==='easy')return dirsAll.slice(0,2);
+ if(mode==='medium')return dirsAll.slice(0,4);
+ if(mode==='hard')return dirsAll;
+ return [...$('directions').querySelectorAll('input:checked')].map(x=>x.value.split(',').map(Number));
+}
+function antiDirs(){return [...$('antiDirections').querySelectorAll('input:checked')].map(x=>x.value.split(',').map(Number))}
+function randChar(){const s=$('fill').value==='vowels'?'AEIOU':$('fill').value==='alphabet'?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ';return s[Math.floor(Math.random()*s.length)]}
+function makePuzzle(){
+ const mainWords=parseEntries(), antiWords=parseAntiEntries(), words=[...mainWords,...antiWords];
+ const R=Math.max(5,Math.min(30,Number($('rows').value)||13)), C=Math.max(5,Math.min(30,Number($('cols').value)||13));
+ if(!mainWords.length&&!antiWords.length)throw Error('Bitte gib mindestens einen Such- oder Anti-Begriff ein.');
+ if(mainWords.length&&!activeDirs().length)throw Error('Bitte wähle mindestens eine Suchrichtung für die Suchwörter aus.');
+ if(antiWords.length&&!antiDirs().length)throw Error('Bitte wähle mindestens eine Suchrichtung für die Anti-Begriffe aus.');
+ const grid=Array.from({length:R},()=>Array(C).fill('')), placements=[];
+ const sorted=[...words].sort((a,b)=>b.pattern.length-a.pattern.length);
+ for(const entry of sorted){
+  const word=entry.pattern, dirs=entry.kind==='anti'?antiDirs():activeDirs();let candidates=[];
+  for(const [dr,dc] of dirs)for(let r=0;r<R;r++)for(let c=0;c<C;c++){
+   const er=r+dr*(word.length-1),ec=c+dc*(word.length-1);if(er<0||er>=R||ec<0||ec>=C)continue;
+   let ok=true,overlap=0;for(let i=0;i<word.length;i++){const ch=grid[r+dr*i][c+dc*i];if(ch&&ch!==word[i]){ok=false;break}if(ch)overlap++}
+   if(ok)candidates.push({r,c,dr,dc,overlap});
+  }
+  if(!candidates.length)throw Error('Der Begriff „'+entry.label+'“ passt nicht ins Raster. Vergrößere das Raster oder verringere die Anzahl.');
+  const minOverlap=Math.min(...candidates.map(x=>x.overlap));
+  const preferred=candidates.filter(x=>x.overlap===minOverlap),p=preferred[Math.floor(Math.random()*preferred.length)],cells=[];
+  for(let i=0;i<word.length;i++){const rr=p.r+p.dr*i,cc=p.c+p.dc*i;grid[rr][cc]=word[i];cells.push([rr,cc])}
+  placements.push({...entry,cells});
+ }
+ for(let r=0;r<R;r++)for(let c=0;c<C;c++)if(!grid[r][c])grid[r][c]=randChar();
+ current={grid,words:mainWords,antiWords,placements};render();$('status').textContent=mainWords.length+' Suchbegriffe und '+antiWords.length+' Anti-Begriffe erfolgreich im '+R+' × '+C+' Raster platziert.';
+}
+function render(){
+ if(!current)return;
+ const accent=$('accent').value,cell=$('cellcolor').value,mark=$('markcolor').value,antiMark=$('antimarkcolor').value,border=$('bordercolor').value;
+ document.documentElement.style.setProperty('--accent',accent);document.documentElement.style.setProperty('--cell',cell);document.documentElement.style.setProperty('--mark',mark);document.documentElement.style.setProperty('--anti-mark',antiMark);
+ $('outTitle').textContent=$('title').value||'Suchsel';$('outSubtitle').textContent=$('subtitle').value;$('outAuthor').textContent=$('author').value;$('outMessage').textContent=$('message').value;
+ const t=$('puzzle');t.innerHTML='';const mainFound=new Set(),antiFound=new Set();
+ if(solutionVisible)current.placements.forEach(p=>p.cells.forEach(([r,c])=>(p.kind==='anti'?antiFound:mainFound).add(r+','+c)));
+ current.grid.forEach((row,r)=>{const tr=document.createElement('tr');row.forEach((ch,c)=>{const td=document.createElement('td'),key=r+','+c;td.textContent=ch;td.style.borderColor=border;td.style.fontSize=$('fontSize').value+'px';td.style.fontFamily=$('gridFont').value;td.style.fontWeight=$('gridWeight').value;if(mainFound.has(key)&&antiFound.has(key))td.className='both-found';else if(antiFound.has(key))td.className='anti-found';else if(mainFound.has(key))td.className='found';tr.appendChild(td)});t.appendChild(tr)});
+ $('wordlist').innerHTML='';
+ if(current.words.length){const section=document.createElement('section');section.className='word-section';const heading=document.createElement('h3');heading.textContent='Suchwörter';section.appendChild(heading);const columns=document.createElement('div');columns.className='word-columns';current.words.slice().sort((a,b)=>a.label.localeCompare(b.label,'de')).forEach(w=>{const sp=document.createElement('span');sp.textContent=w.label;if(solutionVisible)sp.className='foundword';columns.appendChild(sp)});section.appendChild(columns);$('wordlist').appendChild(section)}
+ if(current.antiWords.length){const section=document.createElement('section');section.className='word-section';const heading=document.createElement('h3');heading.textContent='Zusatzbegriffe';section.appendChild(heading);const list=document.createElement('ul');list.className='anti-list';const counts={};current.antiWords.forEach(w=>counts[w.label]=(counts[w.label]||0)+1);Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0],'de')).forEach(([label,count])=>{const li=document.createElement('li');li.textContent=label+' – Anzahl: '+count;if(solutionVisible)li.className='anti-solution';list.appendChild(li)});section.appendChild(list);$('wordlist').appendChild(section)}
+ $('solutionkey').textContent=solutionVisible?'LÖSUNG – Suchwörter gelb, Anti-Begriffe grün markiert.':'';
+}
+function print(solution){try{if(!current)makePuzzle();solutionVisible=solution;render();window.focus();window.print()}catch(e){$('status').textContent='Drucken nicht möglich: '+e.message;alert(e.message)}}
+const generateNow=()=>{try{solutionVisible=false;makePuzzle()}catch(e){$('status').textContent=e.message;alert(e.message)}};
+$('generate').onclick=generateNow;
+$('applyWords').onclick=generateNow;
+$('generateTop').onclick=generateNow;
+$('reshuffle').onclick=()=>{try{solutionVisible=false;makePuzzle()}catch(e){alert(e.message)}};
+$('showSolution').onclick=()=>{if(!current){alert('Bitte erst ein Rätsel erstellen.');return}solutionVisible=true;render()};
+$('hideSolution').onclick=()=>{solutionVisible=false;render()};
+$('printPuzzle').onclick=()=>print(false);$('printSolution').onclick=()=>print(true);
+$('difficulty').onchange=()=>{$('directions').style.opacity=$('difficulty').value==='custom'?'1':'.55'};
+$('saveList').onclick=saveWordlist;
+$('downloadWords').onclick=saveWordlist;
+$('loadList').onclick=()=>$('wordlistFileInput').click();
+$('wordlistFileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const text=await f.text();let words=text,anti='';if(f.name.toLowerCase().endsWith('.json')){const d=JSON.parse(text);words=d.words||'';anti=d.antiWords||''}else{const lines=text.split(/\r?\n/);let mode='words',main=[],extras=[];for(const line of lines){const t=line.trim();if(/^\[?zusatzbegriffe\]?$/i.test(t)||/^anti[- ]?begriffe:?$/i.test(t)){mode='anti';continue}if(/^\[?suchw(ö|oe)rter\]?$/i.test(t)||/^suchbegriffe:?$/i.test(t)){mode='words';continue}if(!t||t.startsWith('#'))continue;(mode==='anti'?extras:main).push(t)}words=main.join('\n');anti=extras.join('\n')} $('words').value=words;$('antiWords').value=anti;$('status').textContent='Wortliste geladen. Klicke auf „Rätsel erstellen“, um das Gitter zu aktualisieren.'}catch(err){alert('Die Wortliste konnte nicht gelesen werden: '+err.message)}e.target.value=''};
+function saveWordlist(){const content='SUCHWÖRTER\n'+$('words').value.trim()+'\n\nZUSATZBEGRIFFE\n'+$('antiWords').value.trim()+'\n';download('wortliste.txt',content,'text/plain;charset=utf-8');$('status').textContent='Wortliste wird als TXT-Datei heruntergeladen.'}
+function download(name,content,type){const a=document.createElement('a'),url=URL.createObjectURL(new Blob(['\ufeff',content],{type}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+$('exportData').onclick=()=>{const data={settings:Object.fromEntries(['title','subtitle','author','words','antiWords','rows','cols','difficulty','fill','fontSize','gridFont','gridWeight','accent','cellcolor','markcolor','antimarkcolor','bordercolor','message'].map(id=>[id,$(id).value])),directions:[...$('directions').querySelectorAll('input')].map(x=>x.checked),antiDirections:[...$('antiDirections').querySelectorAll('input')].map(x=>x.checked)};download('mein-suchsel-projekt.json',JSON.stringify(data,null,2),'application/json')};
+$('importData').onclick=()=>$('fileInput').click();
+$('fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k))$(k).value=v});(d.directions||[]).forEach((v,i)=>{const el=$('directions').querySelectorAll('input')[i];if(el)el.checked=v});(d.antiDirections||[]).forEach((v,i)=>{const el=$('antiDirections').querySelectorAll('input')[i];if(el)el.checked=v});$('status').textContent='Projekt geladen. Klicke auf „Rätsel erstellen“.'}catch(err){alert('Die Projektdatei konnte nicht gelesen werden.')}e.target.value=''};
+['title','subtitle','author','message','accent','cellcolor','markcolor','antimarkcolor','bordercolor','fontSize','gridFont','gridWeight'].forEach(id=>$(id).addEventListener('input',()=>{if(current)render()}));
+try{makePuzzle()}catch(e){$('status').textContent='Fehler beim Erstellen: '+e.message;console.error(e)}
+})();
+</script>
+</body></html>
